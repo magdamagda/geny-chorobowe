@@ -1,0 +1,9 @@
+{% if diseases_list %}
+    <ul>
+    {% for disease in diseases_list %}
+        <li><a href="/{{ disease }}/">{{ disease }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>Nie znaleziono chorób.</p>
+{% endif %}
