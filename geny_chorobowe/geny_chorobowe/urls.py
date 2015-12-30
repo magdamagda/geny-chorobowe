@@ -19,5 +19,6 @@ import find_disease_genes.views
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
-	url(r'^$',  find_disease_genes.views.index, name='index')
+	url(r'^update_clinvar$',  find_disease_genes.views.update_clinvar, name='index'),
+	url(r'^$',  find_disease_genes.views.index, name='index'),
 ]
