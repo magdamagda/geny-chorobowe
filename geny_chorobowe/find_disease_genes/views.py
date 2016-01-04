@@ -8,6 +8,9 @@ def index(request):
     return render(request, 'index.html', context)
 
 def update_clinvar(request):
-	diseases_list = clinvar.getDiseasesList()
-	context = {'diseases_list': diseases_list}
-	return render(request, 'index.html', context)
+    try:
+        clinvar.updateDiseasesList()
+        return redirect('index')
+    except Exception as e:
+        context = {'error': str(e)}
+        return render(request, 'error_page.html', context)
