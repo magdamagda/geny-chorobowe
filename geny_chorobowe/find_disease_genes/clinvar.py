@@ -1,20 +1,25 @@
 from urllib2 import urlopen
 from datetime import datetime
 from django.db import transaction
-from .models import ClinvarDisease
+from models import *
+import logging
+
+logger = logging.getLogger(__name__)
 
 sourcePath = "ftp://ftp.ncbi.nlm.nih.gov/pub/clinvar/gene_condition_source_id"
 
 def updateDiseasesList():
 	#na poczatek wywalic wszystkie choroby z bazy
 	ClinvarDisease.objects.all().delete()
+	ClinvarSource.objects.all().delete()
+	ClinvarGene.objects.all().delete()
 	#i sciagnac wszystkie od nowa
 	req = urlopen(sourcePath)
 	data = req.read()
-	diseases = set()
+	diseases = {}
 	genesDict = {}
-	genes = set()
-	sources = set()
+	genes = {}
+	sources = {}
 	lines = data.split("\n")
 	lines.pop(0)
 	for line in lines:
@@ -22,27 +27,35 @@ def updateDiseasesList():
 			pola = line.split("\t")
 			lastmod = datetime.strptime(pola[7], '%d %b %Y').strftime('%Y-%m-%d')
 			concept = pola[2]
-			diseases.add([concept, pola[3], pola[5], pola[6], lastmod]) #concept, name, sourceID, mim, last_mod
+			sourceId = convertToIntIfPossible(pola[5])
+			diseases[concept]=[pola[3], sourceId, pola[6], lastmod] #concept : name, sourceID, mim, last_mod
 			if not concept in genesDict:
 				genesDict[concept] = []
 			genesDict[concept].append(pola[0])
-			genes.add([pola[0], pola[1]]) #id, name
-			sources.add([pola[5], pola[4]]) #id, name
+			genes[pola[0]] = pola[1] #id : name
+			if not sourceId == None:
+				sources[pola[5]]= pola[4] #id : name
+
 	#insert genes
 	with transaction.atomic():
-		for gene in genes:
-			ClinvarGene.objects.create(GeneName = gene[1] , GeneID = gene[0])
+		for g in genes:
+			ClinvarGene.objects.create(GeneName = genes[g] , GeneID = g)
 
 	#insert sources
 	with transaction.atomic():
 		for s in sources:
-			ClinvarSource.objects.create(SourceName = s[1] , SourceID = s[0])
+			ClinvarSource.objects.create(SourceName = sources[s] , SourceID = s)
 			
 	#insert diseases
 	with transaction.atomic():
 		for d in diseases:
-			disease = ClinvarDisease(DiseaseName = d[1], SourceID = d[2], LastModified = d[4], ConceptID=d[0], DiseaseMIM = d[3] )
-			disease.Genes.add(ClinvarGene.objects.get(GeneID = genesDict[d[0]]))
+			SourceID=None
+			if not diseases[d][1] is None:
+				SourceID = ClinvarSource.objects.get(SourceID=diseases[d][1])
+			disease = ClinvarDisease(DiseaseName = diseases[d][0], SourceID = SourceID, LastModified = diseases[d][3], ConceptID=d, DiseaseMIM = diseases[d][2] )
+			disease.save()
+			for gene in genesDict[d]:
+				disease.Genes.add(ClinvarGene.objects.get(GeneID = gene))
 
 def getDiseasesFromDatabase(name=None, gene=None, fromDate=None, toDate=None, page=0, pageSize = 20):
 	#przerobic to jakos sensownie
@@ -57,3 +70,9 @@ def getDiseasesFromDatabase(name=None, gene=None, fromDate=None, toDate=None, pa
 		diseases = diseases.filter(LastModified__lte = toDate)
 	offset = page*pageSize
 	return diseases[offset : offset + pageSize]
+
+def convertToIntIfPossible(val):
+	try:
+		return int(val)
+	except Exception:
+		return None

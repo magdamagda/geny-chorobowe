@@ -5,7 +5,7 @@
 {% if diseases_list %}
     <ul>
     {% for disease in diseases_list %}
-        <li><a href="/{{ disease }}/">{{ disease }}</a></li>
+        <li><a href="/{{ disease.id }}/">{{ disease.DiseaseName }}</a></li>
     {% endfor %}
     </ul>
 {% else %}
