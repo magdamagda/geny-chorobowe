@@ -7,15 +7,19 @@ logging.basicConfig(filename='genes.log',level=logging.INFO,format='%(asctime)s.
 logger = logging.getLogger(__name__)
 
 def index(request):
-    diseases_list = clinvar.getDiseasesFromDatabase()
+    diseaseName = request.POST["diseaseName"]
+    geneSymbol = request.POST["geneSymbol"]
+    fromDate = request.POST["fromDate"]
+    toDate = request.POST["toDate"]
+    diseases_list = clinvar.getDiseasesFromDatabase(diseaseName, geneSymbol, fromDate, toDate)
     context = {'diseases_list': diseases_list}
     return render(request, 'index.html', context)
 
 def update_clinvar(request):
-    #try:
-    clinvar.updateDiseasesList()
-    return redirect('index')
-    #except Exception as e:
-        #logger.error(str(e))
-        #context = {'error': str(e)}
-        #return render(request, 'error_page.html', context)
+    try:
+        clinvar.updateDiseasesList()
+        return redirect('index')
+    except Exception as e:
+        logger.error(str(e))
+        context = {'error': str(e)}
+        return render(request, 'error_page.html', context)

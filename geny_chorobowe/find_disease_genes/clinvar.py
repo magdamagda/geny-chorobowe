@@ -60,14 +60,15 @@ def updateDiseasesList():
 def getDiseasesFromDatabase(name=None, gene=None, fromDate=None, toDate=None, page=0, pageSize = 20):
 	#przerobic to jakos sensownie
 	diseases = ClinvarDisease.objects.all()
-	if not name is None:
+	if not name is None and not name=="":
 		diseases = diseases.filter(DiseaseName__contains = name)
-	if not gene is None:
+	if not gene is None and not gene=="":
 		diseases = diseases.filter(Genes__GeneName = name)
-	if not fromDate is None:
+	if not fromDate is None and not fromDate=="":
 		diseases = diseases.filter(LastModified__gte = fromDate)
-	if not toDate is None:
+	if not toDate is None and not toDate=="":
 		diseases = diseases.filter(LastModified__lte = toDate)
+	diseases=diseases.order_by('-LastModified')
 	offset = page*pageSize
 	return diseases[offset : offset + pageSize]
 

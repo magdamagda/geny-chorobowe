@@ -2,12 +2,34 @@
 	<p>ładowanie chorób z clinvara...</p>
 {% endif %}
 
+<form action="" method="post">
+    {% csrf_token %}
+<div id="filters">
+    <div id="filterName">
+        <label>Disease name</label><input id="diseaseName" name="diseaseName" type="text">
+    </div>
+    <div id="filterGene">
+        <label>Gene symbol</label><input id="geneSymbol" name="geneSymbol" type="text">
+    </div>
+    <div id="filterFromDate">
+        <label>From</label><input id="fromDate" name="fromDate" type="date">
+    </div>
+    <div id="filterToDate">
+        <label>To</label><input id="toDate" name="toDate" type="date">
+    </div>
+    <div>
+        <input type="submit" value="Filter">
+    </div>
+</div>
+</form>
+
 {% if diseases_list %}
-    <ul>
+    <table>
+        <tr><td>Disease name</td><td>Last update date</td></tr>
     {% for disease in diseases_list %}
-        <li><a href="/{{ disease.id }}/">{{ disease.DiseaseName }}</a></li>
+        <tr><td><a href="diseaseDetails?id={{ disease.id }}/">{{ disease.DiseaseName }}</a></td><td>{{ disease.LastModified }}</td></tr>
     {% endfor %}
-    </ul>
+    </table>
 {% else %}
     <p>Nie znaleziono chorób.</p>
 {% endif %}
