@@ -70,7 +70,11 @@ def getDiseasesFromDatabase(name=None, gene=None, fromDate=None, toDate=None, pa
 		diseases = diseases.filter(LastModified__lte = toDate)
 	diseases=diseases.order_by('-LastModified')
 	offset = page*pageSize
-	return diseases[offset : offset + pageSize]
+	diseases = diseases[offset : offset + pageSize + 1]
+	nextPage=False
+	if len(diseases) > pageSize:
+		nextPage = True
+	return diseases[0:20], nextPage
 
 def convertToIntIfPossible(val):
 	try:

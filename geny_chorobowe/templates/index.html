@@ -1,27 +1,22 @@
-{% if update %}
-	<p>ładowanie chorób z clinvara...</p>
-{% endif %}
-
-<form action="" method="post">
-    {% csrf_token %}
+{% extends "base.html" %}
+{% block content %}
 <div id="filters">
     <div id="filterName">
-        <label>Disease name</label><input id="diseaseName" name="diseaseName" type="text">
+        <label>Disease name</label><input id="diseaseName" name="diseaseName" type="text" value={{diseaseName}}>
     </div>
     <div id="filterGene">
-        <label>Gene symbol</label><input id="geneSymbol" name="geneSymbol" type="text">
+        <label>Gene symbol</label><input id="geneSymbol" name="geneSymbol" type="text" value={{geneSymbol}}>
     </div>
     <div id="filterFromDate">
-        <label>From</label><input id="fromDate" name="fromDate" type="date">
+        <label>From</label><input id="fromDate" name="fromDate" type="date" value={{fromDate}}>
     </div>
     <div id="filterToDate">
-        <label>To</label><input id="toDate" name="toDate" type="date">
+        <label>To</label><input id="toDate" name="toDate" type="date" value={{toDate}}>
     </div>
     <div>
-        <input type="submit" value="Filter">
+        <input type="submit" value="Filter" onclick="">
     </div>
 </div>
-</form>
 
 {% if diseases_list %}
     <table>
@@ -30,6 +25,16 @@
         <tr><td><a href="diseaseDetails?id={{ disease.id }}/">{{ disease.DiseaseName }}</a></td><td>{{ disease.LastModified }}</td></tr>
     {% endfor %}
     </table>
+    
+    {% if not page == 0 %}
+    <input type="submit" value="<" onclick="">
+    {% endif %}
+    <label>{{page}}</label>
+    {% if nextPage %}
+    <input type="submit" value=">" onclick="">
+    {% endif %}
+    
 {% else %}
     <p>Nie znaleziono chorób.</p>
 {% endif %}
+{% endblock %}

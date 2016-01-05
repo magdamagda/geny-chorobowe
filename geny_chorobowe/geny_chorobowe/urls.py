@@ -21,4 +21,5 @@ urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
 	url(r'^update_clinvar$',  find_disease_genes.views.update_clinvar),
 	url(r'^$',  find_disease_genes.views.index, name='index'),
+    url(r'^filterDiseases^$',  find_disease_genes.views.filterDiseases),
 ]
