@@ -16,7 +16,7 @@ def filterDiseases(request):
     geneSymbol = request.GET["geneSymbol"]
     fromDate = request.GET["fromDate"]
     toDate = request.GET["toDate"]
-    page = request.GET["page"]
+    page = int(request.GET["page"])
     diseases_list, nextPage = clinvar.getDiseasesFromDatabase(diseaseName, geneSymbol, fromDate, toDate, page)
     context = {'diseases_list': diseases_list, 'diseaseName' : diseaseName, 'geneSymbol' : geneSymbol, "fromDate" : fromDate, "toDate" : toDate, "page" : page, "nextPage" : nextPage}
     return render(request, 'index.html', context)

@@ -14,7 +14,7 @@
         <label>To</label><input id="toDate" name="toDate" type="date" value={{toDate}}>
     </div>
     <div>
-        <input type="submit" value="Filter" onclick="">
+        <input type="submit" value="Filter" onclick="getFilteredDiseases()">
     </div>
 </div>
 
@@ -27,11 +27,11 @@
     </table>
     
     {% if not page == 0 %}
-    <input type="submit" value="<" onclick="">
+    <input type="submit" value="<" onclick="getFilteredDiseases($('#page').text() - 1)">
     {% endif %}
-    <label>{{page}}</label>
+    <label id="page">{{page}}</label>
     {% if nextPage %}
-    <input type="submit" value=">" onclick="">
+    <input type="submit" value=">" onclick="getFilteredDiseases($('#page').text() + 1)">
     {% endif %}
     
 {% else %}
