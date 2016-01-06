@@ -58,7 +58,6 @@ def updateDiseasesList():
 				disease.Genes.add(ClinvarGene.objects.get(GeneID = gene))
 
 def getDiseasesFromDatabase(name=None, gene=None, fromDate=None, toDate=None, page=0, pageSize = 20):
-	#przerobic to jakos sensownie
 	diseases = ClinvarDisease.objects.all()
 	if not name is None and not name=="":
 		diseases = diseases.filter(DiseaseName__contains = name)
@@ -81,3 +80,11 @@ def convertToIntIfPossible(val):
 		return int(val)
 	except Exception:
 		return None
+	
+def diseaseDetails(ID):
+	disease = ClinvarDisease.objects.get(id = ID)
+	return disease
+
+def geneDetails(ID):
+	gene = ClinvarGene.objects.get(GeneID = ID)
+	return gene

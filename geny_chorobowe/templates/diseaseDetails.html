@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div>
+    <h1>{{ disease.DiseaseName }}</h1>
+</div>
+<div>
+    <label>Last modyfication date: {{ disease.LastModified }}</label>
+    <br>
+    <label>Concept ID: {{ disease.ConceptID }}</label>
+    <br>
+    <label>MIM: {{ disease.DiseaseMIM }}</label>
+</div>
+<div>
+    <h3>Related genes:</h3>
+    <ul>
+    {% for gene in genes %}
+        <li><a href="geneDetails?id={{ gene.GeneID }}">{{ gene.GeneName }}</a></li>
+    {% endfor %}
+    </ul>
+</div>
+<div>
+    <label>Source: {{ source.SourceName }}</label>
+</div>
+
+
+{% endblock %}

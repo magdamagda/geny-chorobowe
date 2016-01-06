@@ -22,7 +22,7 @@
     <table>
         <tr><td>Disease name</td><td>Last update date</td></tr>
     {% for disease in diseases_list %}
-        <tr><td><a href="diseaseDetails?id={{ disease.id }}/">{{ disease.DiseaseName }}</a></td><td>{{ disease.LastModified }}</td></tr>
+        <tr><td><a href="diseaseDetails?id={{ disease.id }}">{{ disease.DiseaseName }}</a></td><td>{{ disease.LastModified }}</td></tr>
     {% endfor %}
     </table>
     

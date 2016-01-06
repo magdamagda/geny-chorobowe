@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div>
+    <h1>{{ gene.GeneName }}</h1>
+</div>
+<div>
+    <h3>Related diseases:</h3>
+    <ul>
+    {% for d in diseases %}
+        <li><a href="diseaseDetails?id={{ d.id }}">{{ d.DiseaseName }}</a></li>
+    {% endfor %}
+    </ul>
+</div>
+
+
+{% endblock %}

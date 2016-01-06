@@ -29,3 +29,19 @@ def update_clinvar(request):
         logger.error(str(e))
         context = {'error': str(e)}
         return render(request, 'error_page.html', context)
+    
+def diseaseDetails(request):
+    diseaseId = int(request.GET["id"])
+    disease = clinvar.diseaseDetails(diseaseId)
+    genes = disease.Genes.all()
+    context={"disease" : disease, "genes" : genes, "source" : disease.SourceID}
+    return render(request, 'diseaseDetails.html', context)
+
+def geneDetails(request):
+    geneId = int(request.GET["id"])
+    gene = clinvar.geneDetails(geneId)
+    diseases = gene.clinvardisease_set.all()
+    context={"diseases" : diseases, "gene" : gene}
+    return render(request, 'geneDetails.html', context)
+
+    
