@@ -1,10 +1,14 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-import clinvar
+import clinvar, medgen
 import logging
 import logging.handlers
+
 logging.basicConfig(filename='genes.log',level=logging.INFO,format='%(asctime)s.%(msecs)d %(levelname)s %(module)s - %(funcName)s: %(message)s', datefmt="%Y-%m-%d %H:%M:%S")
 logger = logging.getLogger(__name__)
+handler = logging.handlers.RotatingFileHandler('genes.log', maxBytes=1024)
+logger.addHandler(handler)
+
 
 def index(request):
     diseases_list, nextPage = clinvar.getDiseasesFromDatabase()
@@ -30,11 +34,24 @@ def update_clinvar(request):
         context = {'error': str(e)}
         return render(request, 'error_page.html', context)
     
+def update_medgen(request):
+    #try:
+    medgen.updateMedgenData()
+    return redirect('index')
+    #except Exception as e:
+        #logger.error(str(e))
+        #context = {'error': str(e)}
+        #return render(request, 'error_page.html', context)
+    
 def diseaseDetails(request):
     diseaseId = int(request.GET["id"])
     disease = clinvar.diseaseDetails(diseaseId)
     genes = disease.Genes.all()
-    context={"disease" : disease, "genes" : genes, "source" : disease.SourceID}
+    concept = medgen.getConceptDetail(disease.ConceptID)
+    related = []
+    if not concept is None:
+        related = concept.RelatedConcepts
+    context={"disease" : disease, "genes" : genes, "source" : disease.Source, "concept" : concept, "related" : related}
     return render(request, 'diseaseDetails.html', context)
 
 def geneDetails(request):

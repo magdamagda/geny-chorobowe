@@ -51,8 +51,8 @@ def updateDiseasesList():
 		for d in diseases:
 			SourceID=None
 			if not diseases[d][1] is None:
-				SourceID = ClinvarSource.objects.get(SourceID=diseases[d][1])
-			disease = ClinvarDisease(DiseaseName = diseases[d][0], SourceID = SourceID, LastModified = diseases[d][3], ConceptID=d, DiseaseMIM = diseases[d][2] )
+				source = ClinvarSource.objects.get(SourceID=diseases[d][1])
+			disease = ClinvarDisease(DiseaseName = diseases[d][0], Source = source, LastModified = diseases[d][3], ConceptID=d, DiseaseMIM = diseases[d][2] )
 			disease.save()
 			for gene in genesDict[d]:
 				disease.Genes.add(ClinvarGene.objects.get(GeneID = gene))

@@ -12,10 +12,23 @@
     <label>MIM: {{ disease.DiseaseMIM }}</label>
 </div>
 <div>
+    <p>
+        {{ concept.Def }}
+    </p>
+</div>
+<div>
     <h3>Related genes:</h3>
     <ul>
     {% for gene in genes %}
         <li><a href="geneDetails?id={{ gene.GeneID }}">{{ gene.GeneName }}</a></li>
+    {% endfor %}
+    </ul>
+</div>
+<div>
+    <h3>Related concepts:</h3>
+    <ul>
+    {% for r in related %}
+        <li><a href="diseaseDetails?concept={{ r.ConceptID }}">{{ r.Name }}</a></li>
     {% endfor %}
     </ul>
 </div>
