@@ -1,7 +1,15 @@
 <head>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 {% load static %}
-<script type="text/javascript" src="{% static "script.js" %}" data-cover></script>
+    <!--  The Raphael JavaScript library for vector graphics display  -->
+    <script type="text/javascript" src="{% static 'graph/raphael-min.js' %}"></script>
+    <!--  Dracula  -->
+    <!--  An extension of Raphael for connecting shapes -->
+    <script type="text/javascript" src="{% static 'graph/dracula_graffle.js' %}"></script>
+    <!--  Graphs  -->
+    <script type="text/javascript" src="{% static 'graph/dracula_graph.js' %}"></script>
+    <script type="text/javascript" src="{% static 'graph/dracula_algorithms.js' %}"></script>
+<script type="text/javascript" src="{% static 'script.js' %}" data-cover></script>
 </head>
 <body>
     <div id="content">

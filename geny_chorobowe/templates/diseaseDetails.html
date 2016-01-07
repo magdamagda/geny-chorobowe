@@ -36,5 +36,18 @@
     <label>Source: {{ source.SourceName }}</label>
 </div>
 
+<div id="canvas">
+    
+</div>
+<script>
+    var list = [];
+    {% for gene in genes %}
+        list.push([ "{{ gene.GeneName }}" , "{{ disease.DiseaseName }}" ]);
+    {% endfor %}
+    window.onload = function() {
+        drawGraph(list);
+    };
+</script>
+
 
 {% endblock %}

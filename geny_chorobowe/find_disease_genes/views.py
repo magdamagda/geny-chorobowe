@@ -3,6 +3,7 @@ from django.http import HttpResponse
 import clinvar, medgen
 import logging
 import logging.handlers
+import json
 
 logging.basicConfig(filename='genes.log',level=logging.INFO,format='%(asctime)s.%(msecs)d %(levelname)s %(module)s - %(funcName)s: %(message)s', datefmt="%Y-%m-%d %H:%M:%S")
 logger = logging.getLogger(__name__)
@@ -51,7 +52,10 @@ def diseaseDetails(request):
     related = []
     if not concept is None:
         related = concept.RelatedConcepts
-    context={"disease" : disease, "genes" : genes, "source" : disease.Source, "concept" : concept, "related" : related}
+    genesDisease = {}
+    for gene in genes:
+        genesDisease[gene.GeneName] = gene.clinvardisease_set.all()
+    context={"disease" : disease, "genes" : genes, "source" : disease.Source, "concept" : concept, "related" : related, "genesDisease" : genesDisease }
     return render(request, 'diseaseDetails.html', context)
 
 def geneDetails(request):
@@ -60,5 +64,3 @@ def geneDetails(request):
     diseases = gene.clinvardisease_set.all()
     context={"diseases" : diseases, "gene" : gene}
     return render(request, 'geneDetails.html', context)
-
-    
