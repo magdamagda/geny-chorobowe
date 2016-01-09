@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-import clinvar, medgen
+import clinvar, medgen, pubmed
 import logging
 import logging.handlers
 import json
@@ -52,7 +52,8 @@ def diseaseDetails(request):
     related = []
     if not concept is None:
         related = concept.RelatedConcepts
-    context={"disease" : disease, "genes" : genes, "source" : disease.Source, "concept" : concept, "related" : related}
+    docs = pubmed.getPubmedPublications(disease.DiseaseName)
+    context={"disease" : disease, "genes" : genes, "sources" : docs, "concept" : concept, "related" : related}
     return render(request, 'diseaseDetails.html', context)
 
 def geneDetails(request):
@@ -99,31 +100,23 @@ def getGraphDataForGene(request):
     return HttpResponse(json.dumps({"data" : {"diseases" : diseases, "genes" : genes, "connections" : connections } }), content_type='application/json')
 
 def getGenesRelatedToDiseases(relatedDiseases, genes, diseases, connections):
-    print "get related genes "
     relatedGenesList = []
     for diseaseID in relatedDiseases:
         genesList = clinvar.diseaseGenes(diseaseID)
         for gene in genesList:
             if not gene.GeneID in genes:
                 genes[gene.GeneID] = gene.GeneName
-                print "append"
-                print diseaseID
-                print gene.GeneID
                 connections.append([diseaseID, gene.GeneID])
                 relatedGenesList.append(gene.GeneID)
     return relatedGenesList
 
 def getDiseasesRelatedToGenes(relatedGenes, genes, diseases, connections):
-    print "get related diseases"
     relatedDiseasesList = []
     for geneID in relatedGenes:
         diseasesList = clinvar.geneDiseases(geneID)
         for disease in diseasesList:
             if not disease.ConceptID in diseases:
                 diseases[disease.ConceptID] = disease.DiseaseName
-                print "append"
-                print disease.ConceptID
-                print geneID
                 connections.append([disease.ConceptID, geneID])
                 relatedDiseasesList.append(disease.ConceptID)
     return relatedDiseasesList

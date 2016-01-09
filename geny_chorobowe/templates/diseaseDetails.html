@@ -33,7 +33,18 @@
     </ul>
 </div>
 <div>
-    <label>Source: {{ source.SourceName }}</label>
+    <h3>Sources:</h3>
+    {{ sources }}
+    {% for source in sources %}
+        <div> {{ source.Title }}
+            <br>
+            {{ source.Data }}
+            <br>
+            {{ source.Journal }}
+            <br>
+            Authors: {{ source.Authors }}
+        </div>
+    {% endfor %}
 </div>
 
 <div id="canvas">
