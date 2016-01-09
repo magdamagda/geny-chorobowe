@@ -15,7 +15,7 @@ class ClinvarDisease(models.Model):
 	DiseaseName = models.CharField(max_length=200)
 	Source = models.ForeignKey(ClinvarSource, on_delete=models.DO_NOTHING, null=True)
 	LastModified = models.DateField()
-	ConceptID = models.CharField(max_length=10, null=True, blank=True)
+	ConceptID = models.CharField(max_length=10, primary_key = True)
 	DiseaseMIM = models.CharField(max_length=15, null=True, blank=True)
 	Genes = models.ManyToManyField(ClinvarGene)
 

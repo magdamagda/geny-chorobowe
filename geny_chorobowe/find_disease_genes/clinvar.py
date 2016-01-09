@@ -82,9 +82,17 @@ def convertToIntIfPossible(val):
 		return None
 	
 def diseaseDetails(ID):
-	disease = ClinvarDisease.objects.get(id = ID)
+	disease = ClinvarDisease.objects.get(ConceptID = ID)
 	return disease
 
 def geneDetails(ID):
 	gene = ClinvarGene.objects.get(GeneID = ID)
 	return gene
+
+def diseaseGenes(ID):
+	disease = ClinvarDisease.objects.get(ConceptID = ID)
+	return disease.Genes.all()
+
+def geneDiseases(ID):
+	gene = ClinvarGene.objects.get(GeneID = ID)
+	return gene.clinvardisease_set.all()

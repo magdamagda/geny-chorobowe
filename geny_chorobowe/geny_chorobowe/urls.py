@@ -25,4 +25,6 @@ urlpatterns = [
     url(r'^filterDiseases$',  find_disease_genes.views.filterDiseases),
     url(r'^diseaseDetails$',  find_disease_genes.views.diseaseDetails),
     url(r'^geneDetails$',  find_disease_genes.views.geneDetails),
+    url(r'^getGraphDataForDisease$',  find_disease_genes.views.getGraphDataForDisease),
+    url(r'^getGraphDataForGene$',  find_disease_genes.views.getGraphDataForGene),
 ]

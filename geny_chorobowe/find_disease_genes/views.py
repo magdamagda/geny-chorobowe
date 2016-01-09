@@ -45,17 +45,14 @@ def update_medgen(request):
         #return render(request, 'error_page.html', context)
     
 def diseaseDetails(request):
-    diseaseId = int(request.GET["id"])
+    diseaseId = request.GET["id"]
     disease = clinvar.diseaseDetails(diseaseId)
     genes = disease.Genes.all()
     concept = medgen.getConceptDetail(disease.ConceptID)
     related = []
     if not concept is None:
         related = concept.RelatedConcepts
-    genesDisease = {}
-    for gene in genes:
-        genesDisease[gene.GeneName] = gene.clinvardisease_set.all()
-    context={"disease" : disease, "genes" : genes, "source" : disease.Source, "concept" : concept, "related" : related, "genesDisease" : genesDisease }
+    context={"disease" : disease, "genes" : genes, "source" : disease.Source, "concept" : concept, "related" : related}
     return render(request, 'diseaseDetails.html', context)
 
 def geneDetails(request):
@@ -64,3 +61,69 @@ def geneDetails(request):
     diseases = gene.clinvardisease_set.all()
     context={"diseases" : diseases, "gene" : gene}
     return render(request, 'geneDetails.html', context)
+
+def getGraphDataForDisease(request):
+    diseaseId = request.GET["id"]
+    level = int(request.GET["level"])
+    disease = clinvar.diseaseDetails(diseaseId)
+    i=0
+    diseases = {} # disease id : disease name
+    genes = {} # gene id : gene name
+    connections = [] # [[disease id, gene id], ]
+    relatedDiseases = [diseaseId, ]
+    diseases[disease.ConceptID]=disease.DiseaseName
+    while i<level and len(relatedDiseases) > 0:
+        relatedGenes = getGenesRelatedToDiseases(relatedDiseases, genes, diseases, connections)
+        i += 1
+        if i<level:
+            relatedDiseases = getDiseasesRelatedToGenes(relatedGenes, genes, diseases, connections)
+            i+=1
+    return HttpResponse(json.dumps({"data" : {"diseases" : diseases, "genes" : genes, "connections" : connections } }), content_type='application/json')
+
+def getGraphDataForGene(request):
+    geneId = int(request.GET["id"])
+    level = int(request.GET["level"])
+    gene = clinvar.geneDetails(geneId)
+    i=0
+    diseases = {} # disease id : disease name
+    genes = {} # gene id : gene name
+    connections = [] # [[disease id, gene id], ]
+    relatedGenes = [geneId, ]
+    genes[gene.GeneID]=gene.GeneName
+    while i<level and len(relatedGenes) > 0:
+        relatedDiseases = getDiseasesRelatedToGenes(relatedGenes, genes, diseases, connections)
+        i += 1
+        if i<level:
+            relatedGenes = getGenesRelatedToDiseases(relatedDiseases, genes, diseases, connections)
+            i+=1
+    return HttpResponse(json.dumps({"data" : {"diseases" : diseases, "genes" : genes, "connections" : connections } }), content_type='application/json')
+
+def getGenesRelatedToDiseases(relatedDiseases, genes, diseases, connections):
+    print "get related genes "
+    relatedGenesList = []
+    for diseaseID in relatedDiseases:
+        genesList = clinvar.diseaseGenes(diseaseID)
+        for gene in genesList:
+            if not gene.GeneID in genes:
+                genes[gene.GeneID] = gene.GeneName
+                print "append"
+                print diseaseID
+                print gene.GeneID
+                connections.append([diseaseID, gene.GeneID])
+                relatedGenesList.append(gene.GeneID)
+    return relatedGenesList
+
+def getDiseasesRelatedToGenes(relatedGenes, genes, diseases, connections):
+    print "get related diseases"
+    relatedDiseasesList = []
+    for geneID in relatedGenes:
+        diseasesList = clinvar.geneDiseases(geneID)
+        for disease in diseasesList:
+            if not disease.ConceptID in diseases:
+                diseases[disease.ConceptID] = disease.DiseaseName
+                print "append"
+                print disease.ConceptID
+                print geneID
+                connections.append([disease.ConceptID, geneID])
+                relatedDiseasesList.append(disease.ConceptID)
+    return relatedDiseasesList

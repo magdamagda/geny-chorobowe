@@ -8,13 +8,18 @@
     <h3>Related diseases:</h3>
     <ul>
     {% for d in diseases %}
-        <li><a href="diseaseDetails?id={{ d.id }}">{{ d.DiseaseName }}</a></li>
+        <li><a href="diseaseDetails?id={{ d.ConceptID }}">{{ d.DiseaseName }}</a></li>
     {% endfor %}
     </ul>
 </div>
 <div id="canvas">
     
 </div>
-
+<script>
+    var geneID = "{{ gene.GeneID }}" ;
+    window.onload = function() {
+        getGraphDataForGene(geneID, 2);
+    };
+</script>
 
 {% endblock %}

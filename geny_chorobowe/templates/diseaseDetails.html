@@ -28,7 +28,7 @@
     <h3>Related concepts:</h3>
     <ul>
     {% for r in related %}
-        <li><a href="diseaseDetails?concept={{ r.ConceptID }}">{{ r.Name }}</a></li>
+        <li><a href="diseaseDetails?id={{ r.ConceptID }}">{{ r.Name }}</a></li>
     {% endfor %}
     </ul>
 </div>
@@ -40,12 +40,9 @@
     
 </div>
 <script>
-    var list = [];
-    {% for gene in genes %}
-        list.push([ "{{ gene.GeneName }}" , "{{ disease.DiseaseName }}" ]);
-    {% endfor %}
+    var diseaseID = "{{ disease.ConceptID }}" ;
     window.onload = function() {
-        drawGraph(list);
+        getGraphDataForDisease(diseaseID, 2);
     };
 </script>
 
