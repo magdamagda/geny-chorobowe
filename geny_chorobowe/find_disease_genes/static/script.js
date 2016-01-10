@@ -57,7 +57,7 @@ function drawGraph(geneDiseaseList, genes, diseases) {
     /* layout the graph using the Spring layout implementation */
     var layouter = new Graph.Layout.Spring(g);
     
-    var renderer = new Graph.Renderer.Raphael('canvas', g, width, height);
+    var renderer = new Graph.Renderer.Raphael('canvasGraph', g, width, height);
     renderer.draw();
 }
 
@@ -93,4 +93,35 @@ function getGraphDataResponse(result,status,xhr) {
     if (result.error == null) {
         drawGraph(result.data.connections, result.data.genes, result.data.diseases);
     }
+}
+
+function drawSourceTimeLine(sources, sourcesNames) {
+    data=[];
+    for (var i in sources){
+        data.push({x: new Date(sources[i]), y: 1, indexLabel: i, markerColor : "red"});
+    }
+    var chart = new CanvasJS.Chart("sourcesTimeline",
+    {
+      title:{
+      text: "Sources timeline"
+      },
+      tooltip:{
+        content : "{x}",
+      },
+      axisX: {
+      },
+      axisY:{
+        maximum : 2,
+        interval : 1,
+        includeZero: false
+      },
+      data: [
+      {
+        type: "line",
+        dataPoints: data,
+      }
+      ]
+    });
+
+    chart.render();
 }

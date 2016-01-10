@@ -37,4 +37,10 @@
 {% else %}
     <p>Nie znaleziono chorób.</p>
 {% endif %}
+ <script>
+    $(function() {
+        $( "#fromDate" ).datepicker();
+        $( "#toDate" ).datepicker();
+    });
+</script>
 {% endblock %}

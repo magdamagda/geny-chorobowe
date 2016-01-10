@@ -35,9 +35,9 @@
 <div>
     <h3>Sources:</h3>
     {% for source in sources %}
-        <div>{{i}} {{ source.Title }}
+        <div>{{ source.Num }}. {{ source.Title }}
             <br>
-            {{ source.Data }}
+            {{ source.Date }}
             <br>
             {{ source.Journal }}
             <br>
@@ -46,16 +46,25 @@
         </div>
     {% endfor %}
 </div>
+<div id="sourcesTimeline" style="height: 300px; width: 100%;">
+    
+</div>
 <div>
     <h3>Relations graph:</h3>
 </div>
-<div id="canvas">
+<div id="canvasGraph">
     
 </div>
 <script>
     var diseaseID = "{{ disease.ConceptID }}" ;
+    var sources = { {% for source in sources %}
+                   {{ source.Num }} : "{{ source.Date }}",
+                   
+           {% endfor %} };
+    
     window.onload = function() {
         getGraphDataForDisease(diseaseID, 2);
+        drawSourceTimeLine(sources);
     };
 </script>
 

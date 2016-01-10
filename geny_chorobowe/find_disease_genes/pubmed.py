@@ -1,7 +1,7 @@
-from urllib2 import urlopen
-import httplib, urllib
+import urllib
 import httplib2
 import xml.etree.ElementTree as ET
+from datetime import datetime
 
 pubMedIdsPath = "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi"
 pubmedSourcesPath = "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi"
@@ -28,12 +28,19 @@ def getSourcesDetail(ids):
     result = []
     root = ET.fromstring(content)
     docs = root.findall("DocSum")
+    i=1
     for doc in docs:
         d = pubMedDoc()
         d.Id = doc.find("Id").text
+        d.Num = i
         for item in doc.findall("Item"):
             if item.attrib["Name"]=="PubDate":
-                d.Data = item.text
+                #lastmod = datetime.strptime(pola[7], '%d %b %Y').strftime('%Y-%m-%d')
+                d.PubDate = item.text
+            if item.attrib["Name"]=="History":
+                for date in item.findall("Item"):
+                    if date.attrib["Name"] == "pubmed":
+                        d.Date = date.text
             if item.attrib["Name"]=="AuthorList":
                 for author in item.findall("Item"):
                     d.Authors.append(author.text)
@@ -42,12 +49,15 @@ def getSourcesDetail(ids):
             if item.attrib["Name"]=="FullJournalName":
                 d.Journal = item.text
         result.append(d)
+        i+=1
     return result
 
 class pubMedDoc():
     def __init__(self):
         self.Id = None
-        self.Data = None
+        self.PubDate = ""
+        self.Date = None
         self.Authors = []
         self.Title = ""
         self.Journal = ""
+        self.Num = 0
