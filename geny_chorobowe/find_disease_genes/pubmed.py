@@ -18,13 +18,13 @@ def getIds(name):
     ids = root.find("IdList")
     result = ''
     for i in ids.findall("Id"):
-        result += i.text
+        result += "," + i.text
     return result
     
 def getSourcesDetail(ids):
     data = urllib.urlencode({"db" : "pubmed", "id" : ids})
     h = httplib2.Http()
-    resp, content = h.request(pubmedSourcesPath, method="GET", body=data)
+    resp, content = h.request(pubmedSourcesPath + "?" + data, method="GET")
     result = []
     root = ET.fromstring(content)
     docs = root.findall("DocSum")
@@ -32,7 +32,7 @@ def getSourcesDetail(ids):
         d = pubMedDoc()
         d.Id = doc.find("Id").text
         for item in doc.findall("Item"):
-            if item.attrib["Name"]=="PubMed":
+            if item.attrib["Name"]=="PubDate":
                 d.Data = item.text
             if item.attrib["Name"]=="AuthorList":
                 for author in item.findall("Item"):
@@ -46,8 +46,8 @@ def getSourcesDetail(ids):
 
 class pubMedDoc():
     def __init__(self):
-        Id = None
-        Data = None
-        Authors = []
-        Title = ""
-        Journal = ""
+        self.Id = None
+        self.Data = None
+        self.Authors = []
+        self.Title = ""
+        self.Journal = ""

@@ -34,19 +34,21 @@
 </div>
 <div>
     <h3>Sources:</h3>
-    {{ sources }}
     {% for source in sources %}
-        <div> {{ source.Title }}
+        <div>{{i}} {{ source.Title }}
             <br>
             {{ source.Data }}
             <br>
             {{ source.Journal }}
             <br>
             Authors: {{ source.Authors }}
+            <br><br>
         </div>
     {% endfor %}
 </div>
-
+<div>
+    <h3>Relations graph:</h3>
+</div>
 <div id="canvas">
     
 </div>
