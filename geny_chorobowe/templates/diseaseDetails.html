@@ -2,7 +2,7 @@
 {% block content %}
 
 <div>
-    <h1>{{ disease.DiseaseName }}</h1>
+    <h1>{{ name }}</h1>
 </div>
 <div>
     <label>Last modyfication date: {{ disease.LastModified }}</label>
@@ -61,10 +61,15 @@
                    {{ source.Num }} : "{{ source.Date }}",
                    
            {% endfor %} };
+
+        var sourcesNames = { {% for source in sources %}
+                   {{ source.Num }} : "{{ source.Title }}",
+
+           {% endfor %} };
     
     window.onload = function() {
         getGraphDataForDisease(diseaseID, 2);
-        drawSourceTimeLine(sources);
+        drawSourceTimeLine(sources, sourcesNames);
     };
 </script>
 

@@ -100,13 +100,14 @@ function drawSourceTimeLine(sources, sourcesNames) {
     for (var i in sources){
         data.push({x: new Date(sources[i]), y: 1, indexLabel: i, markerColor : "red"});
     }
+    console.log(sourcesNames);
     var chart = new CanvasJS.Chart("sourcesTimeline",
     {
       title:{
       text: "Sources timeline"
       },
       tooltip:{
-        content : "{x}",
+        content : "jhfbejrhfv",
       },
       axisX: {
       },
@@ -124,4 +125,51 @@ function drawSourceTimeLine(sources, sourcesNames) {
     });
 
     chart.render();
+}
+
+function update_data_base(){
+    updateClinvar();
+    $("#updateResult").text("Updating clinvar. It can take a while ...");
+}
+
+function updateMedgen() {
+    var url = 'update_medgen';
+    $.ajax({
+        url: url,
+        dataType: 'json',
+        type: 'GET',
+        success: updateMedgenResponse,
+    });
+}
+
+function updateClinvar() {
+    var url = 'update_clinvar';
+    $.ajax({
+        url: url,
+        dataType: 'json',
+        type: 'GET',
+        success: updateClinvarResponse,
+    });
+}
+
+function updateClinvarResponse(result,status,xhr){
+    if("result" in result && result["result"]=="OK"){
+        update_medgen();
+        $("#updateResult").text("Clinvar updated. Updating medgen. It can take a while ...");
+        return;
+    }
+    if("error" in result){
+        $("#updateResult").text(result["error"]);
+    }
+}
+
+function updateMedgenResponse(result,status,xhr){
+    if("result" in result && result["result"]=="OK"){
+        $("#updateResult").text("Update finished. Refreshing site ...");
+        window.location.href = "/";
+        return;
+    }
+    if("error" in result){
+        $("#updateResult").text(result["error"]);
+    }
 }

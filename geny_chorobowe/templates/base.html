@@ -16,6 +16,14 @@
 <script type="text/javascript" src="{% static 'script.js' %}" data-cover></script>
 </head>
 <body>
+    <div>
+        <input type="submit" value="Update database" onclick="update_data_base();"><label id="updateResult"></label>
+        <br>
+        <label><a href="/">Main page</a></label>
+    </div>
+    <div>
+        
+    </div>
     <div id="content">
         {% block content %}{% endblock %}
     </div>
