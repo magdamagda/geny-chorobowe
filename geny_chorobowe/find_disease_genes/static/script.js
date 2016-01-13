@@ -100,7 +100,7 @@ function drawSourceTimeLine(sources, sourcesNames) {
     for (var i in sources){
         data.push({x: new Date(sources[i]), y: 1, indexLabel: i, markerColor : "red"});
     }
-    console.log(sourcesNames);
+    //console.log(sourcesNames);
     var chart = new CanvasJS.Chart("sourcesTimeline",
     {
       title:{
@@ -154,7 +154,7 @@ function updateClinvar() {
 
 function updateClinvarResponse(result,status,xhr){
     if("result" in result && result["result"]=="OK"){
-        update_medgen();
+        updateMedgen();
         $("#updateResult").text("Clinvar updated. Updating medgen. It can take a while ...");
         return;
     }
