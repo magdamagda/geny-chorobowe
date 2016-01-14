@@ -29,31 +29,36 @@ def filterDiseases(request):
 def update_clinvar(request):
     try:
         clinvar.updateDiseasesList()
-        return redirect('index')
+        return HttpResponse(json.dumps({"result" :"OK" }), content_type='application/json')
+    except Exception as e:
+        logger.error(str(e))
+        return HttpResponse(json.dumps({"error" : str(e) }), content_type='application/json')
+
+    
+def update_medgen(request):
+    try:
+        medgen.updateMedgenData()
+        return HttpResponse(json.dumps({"result" :"OK" }), content_type='application/json')
     except Exception as e:
         logger.error(str(e))
         context = {'error': str(e)}
-        return render(request, 'error_page.html', context)
-    
-def update_medgen(request):
-    #try:
-    medgen.updateMedgenData()
-    return redirect('index')
-    #except Exception as e:
-        #logger.error(str(e))
-        #context = {'error': str(e)}
-        #return render(request, 'error_page.html', context)
-    
+        return HttpResponse(json.dumps({"error" : str(e) }), content_type='application/json')
+
 def diseaseDetails(request):
     diseaseId = request.GET["id"]
+    context = {}
     disease = clinvar.diseaseDetails(diseaseId)
-    genes = disease.Genes.all()
-    concept = medgen.getConceptDetail(disease.ConceptID)
-    related = []
+    if not disease is None:
+        context["name"] = disease.DiseaseName
+        context["disease"] = disease
+        context["genes"] = disease.Genes.all()
+    concept = medgen.getConceptDetail(diseaseId)
     if not concept is None:
-        related = concept.RelatedConcepts
-    docs = pubmed.getPubmedPublications(disease.DiseaseName)
-    context={"disease" : disease, "genes" : genes, "sources" : docs, "concept" : concept, "related" : related}
+        context["concept"] = concept
+        context["related"] = concept.RelatedConcepts.all()
+        context["name"] = concept.Name
+    if "name" in context:
+        context["sources"] = pubmed.getPubmedPublications(context["name"])
     return render(request, 'diseaseDetails.html', context)
 
 def geneDetails(request):

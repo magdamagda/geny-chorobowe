@@ -32,23 +32,25 @@ def updateMedgenData():
     print "inserting into db"
     with transaction.atomic():
         for c in defs:
-            print c
             concept = MedgenConcept.objects.create(ConceptID = c, Name = namesAndSources[c][0], Def = defs[c], Source = namesAndSources[c][1])
             #concept.save()
     print 'defs inserted'
+    relatedLen = str(len(related))
     with transaction.atomic():
+        i=0
         for c in related:
+            print "progres: " + str(i) + "/" + relatedLen
+            i+=1
             try:
                 concept = MedgenConcept.objects.get(ConceptID = c)
-                print c
+                #concept.RelatedConcepts.add(MedgenConcept.objects.get(ConceptID = c[1]))
+                #print c[0] + "  " + c[1]
             except Exception as e:
                 print "No concept " + c
             for item in related[c]:
                 try:
                     concept.RelatedConcepts.add(MedgenConcept.objects.get(ConceptID = item))
-                    print item
                 except Exception as e:
-                    logger.info(str(e))
                     print "no concept " + item
                     
 def getConceptDefs():
@@ -82,16 +84,22 @@ def getRelatedConcepts():
         cui2 = line[4]
         if not cui1 in related:
             related[cui1] = set()
-        if not cui2 in related:
-            related[cui2] = set()
         related[cui1].add(cui2)
-        related[cui2].add(cui1)
     return related
 
 def getConceptDetail(conceptID):
     try:
-        MedgenConcept.objects.get(ConceptID = conceptID)
+        return MedgenConcept.objects.get(ConceptID = conceptID)
     except Exception as e:
         logger.info(str(e))
+        print "no concept " + conceptID
         return None
-        
+
+def getConceptByName(name):
+    print "get concept by name"
+    try:
+        return MedgenConcept.objects.get(Name = name)
+    except Exception as e:
+        print "no concept " + name
+        return None
+
