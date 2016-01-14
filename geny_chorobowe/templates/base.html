@@ -1,5 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<style>
+.form-group {
+    margin-bottom: 0px;}
+</style>
 {% load static %}
     <!--  The Raphael JavaScript library for vector graphics display  -->
     <script type="text/javascript" src="{% static 'graph/raphael-min.js' %}"></script>
@@ -13,10 +22,20 @@
     <script type="text/javascript" src="{% static 'jquery-ui.min.js' %}"></script>
     <link rel="stylesheet" href="{% static 'jquery-ui.min.css' %}">
     <link rel="stylesheet" href="{% static 'jquery-ui.theme.min.css' %}">
+
 <script type="text/javascript" src="{% static 'script.js' %}" data-cover></script>
+
+<title>Disease genes</title>
 </head>
 <body>
-    <div id="content">
+    {% include "header.html" %}
+    <div class="container">
         {% block content %}{% endblock %}
     </div>
+    <nav class="navbar navbar-default navbar-bottom" style="margin-bottom: 0px; min-height: 0px;">
+        <div class="container">
+            <p style="text-align: right; color: #818181; margin:0 0 0 0;">Magdalena Malenda, Piotr Kuciński, Tomasz Rydzewski</p>
+        </div>
+    </nav>
 </body>
+</html>

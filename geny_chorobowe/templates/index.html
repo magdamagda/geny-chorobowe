@@ -1,46 +1,78 @@
 {% extends "base.html" %}
 {% block content %}
+<div class="panel panel-default panel-body">
+<div class="form-horizontal">
 <div id="filters">
-    <div id="filterName">
-        <label>Disease name</label><input id="diseaseName" name="diseaseName" type="text" value={{diseaseName}}>
+    <div class="form-group">
+        <div class="col-sm-2 control-label">
+            <label for="diseaseName">Disease name</label>
+        </div>
+        <div class="col-sm-10">
+            <input id="diseaseName" name="diseaseName" type="text" value={{diseaseName}}>
+        </div>
     </div>
-    <div id="filterGene">
-        <label>Gene symbol</label><input id="geneSymbol" name="geneSymbol" type="text" value={{geneSymbol}}>
+    <div class="form-group">
+        <div class="col-sm-2 control-label">
+            <label for="geneSymbol">Gene symbol</label>
+        </div>
+        <div class="col-sm-10">
+            <input id="geneSymbol" name="geneSymbol" type="text" value={{geneSymbol}}>
+        </div>
     </div>
-    <div id="filterFromDate">
-        <label>From</label><input id="fromDate" name="fromDate" type="date" value={{fromDate}}>
+    <div class="form-group">
+        <div class="col-sm-2 control-label">
+            <label for="fromDate">From</label>
+        </div>
+        <div class="col-sm-10">
+            <input id="fromDate" name="fromDate" type="date" value={{fromDate}}>
+        </div>
     </div>
-    <div id="filterToDate">
-        <label>To</label><input id="toDate" name="toDate" type="date" value={{toDate}}>
+    <div class="form-group">
+        <div class="col-sm-2 control-label">
+            <label for="toDate">To</label>
+        </div>
+        <div class="col-sm-10">
+            <input id="toDate" name="toDate" type="date" value={{toDate}}>
+        </div>
     </div>
-    <div>
-        <input type="submit" value="Filter" onclick="getFilteredDiseases()">
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+            <input class="btn btn-default" type="submit" value="Filter" onclick="getFilteredDiseases()">
+        </div>
     </div>
+</div>
+</div>
 </div>
 
 {% if diseases_list %}
-    <table>
-        <tr><td>Disease name</td><td>Last update date</td></tr>
+    <table class="table table-striped table-condensed">
+        <tr><th>Disease name</th><th>Last update date</th></tr>
     {% for disease in diseases_list %}
         <tr><td><a href="diseaseDetails?id={{ disease.ConceptID }}">{{ disease.DiseaseName }}</a></td><td>{{ disease.LastModified }}</td></tr>
     {% endfor %}
     </table>
     
-    {% if not page == 0 %}
-    <input type="submit" value="<" onclick="getFilteredDiseases($('#page').text() - 1)">
-    {% endif %}
-    <label id="page">{{page}}</label>
-    {% if nextPage %}
-    <input type="submit" value=">" onclick="getFilteredDiseases($('#page').text() + 1)">
-    {% endif %}
+    <nav class="pager">
+        {% if not page == 0 %}
+        <input style="width: 100px;" class="btn btn-default btn-sm" type="submit" value="Previous" onclick="getFilteredDiseases($('#page').text() - 1)">
+        {% endif %}
+        <label style="padding-left: 20px; padding-right: 20px;" id="page">{{page}}</label>
+        {% if nextPage %}
+        <input style="width: 100px;" class="btn btn-default btn-sm" type="submit" value="Next" onclick="getFilteredDiseases(parseInt($('#page').text()) + 1)">
+        {% endif %}
+    </nav>
     
 {% else %}
-    <p>Nie znaleziono chorób.</p>
+    <p>No diseases in database.</p>
 {% endif %}
  <script>
     $(function() {
-        $( "#fromDate" ).datepicker();
-        $( "#toDate" ).datepicker();
+        $( "#fromDate" ).datepicker({
+            dateFormat: "yy-mm-dd"
+        });
+        $( "#toDate" ).datepicker({
+            dateFormat: "yy-mm-dd"
+        });
     });
 </script>
 {% endblock %}

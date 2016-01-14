@@ -98,7 +98,7 @@ function getGraphDataResponse(result,status,xhr) {
 function drawSourceTimeLine(sources, sourcesNames) {
     data=[];
     for (var i in sources){
-        data.push({x: new Date(sources[i]), y: 1, indexLabel: i, markerColor : "red"});
+        data.push({x: new Date(sources[i]), y: 1, indexLabel: i, markerColor : "red", label: sourcesNames[i]});
     }
     var chart = new CanvasJS.Chart("sourcesTimeline",
     {
@@ -106,7 +106,8 @@ function drawSourceTimeLine(sources, sourcesNames) {
       text: "Sources timeline"
       },
       tooltip:{
-        content : "{x}",
+        content : "{label}",
+	enabled: true
       },
       axisX: {
       },
