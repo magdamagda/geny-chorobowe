@@ -12,13 +12,43 @@
     {% endfor %}
     </ul>
 </div>
+<div>
+    <h3>Sources:</h3>
+    {% for source in sources %}
+        <div>{{ source.Num }}. {{ source.Title }}
+            <br>
+            {{ source.Date }}
+            <br>
+            {{ source.Journal }}
+            <br>
+            Authors: {% for author in source.Authors %}
+            <a href="http://www.ncbi.nlm.nih.gov/pubmed/?term={{author}}" target="_blank">{{author}}</a>{%if not forloop.last%},{%endif%}
+            {% endfor %}
+            <br><br>
+        </div>
+    {% endfor %}
+</div>
 <div id="canvasGraph">
     
 </div>
+<div id="sourcesTimeline" style="height: 300px; width: 100%;">
+
+</div>
 <script>
     var geneID = "{{ gene.GeneID }}" ;
+     var sources = { {% for source in sources %}
+                   {{ source.Num }} : "{{ source.Date }}",
+
+           {% endfor %} };
+    var names = {
+		{% for source in sources %}
+			{{ source.Num }}: "{{ source.Title }}",
+
+		{% endfor %}
+		};
     window.onload = function() {
         getGraphDataForGene(geneID, 2);
+        drawSourceTimeLine(sources, names);
     };
 </script>
 

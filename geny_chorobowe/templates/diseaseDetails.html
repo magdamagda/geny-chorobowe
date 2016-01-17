@@ -44,6 +44,12 @@
             <br>
             Authors: {% for author in source.Authors %}
             <a href="http://www.ncbi.nlm.nih.gov/pubmed/?term={{author}}" target="_blank">{{author}}</a>{%if not forloop.last%},{%endif%}
+
+            {% endfor %}
+            <br>
+            Related with:
+            {% for item in  source.related %}
+                <a href="geneDetails?id={{ item.id }}">{{ item.name }}</a>
             {% endfor %}
             <br><br>
         </div>

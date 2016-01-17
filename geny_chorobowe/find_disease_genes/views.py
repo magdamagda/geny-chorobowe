@@ -59,13 +59,15 @@ def diseaseDetails(request):
         context["name"] = concept.Name
     if "name" in context:
         context["sources"] = pubmed.getPubmedPublications(context["name"])
+        if "genes" in context:
+            pubmed.getGenesPubRelation(context["genes"], context["sources"])
     return render(request, 'diseaseDetails.html', context)
 
 def geneDetails(request):
     geneId = int(request.GET["id"])
     gene = clinvar.geneDetails(geneId)
     diseases = gene.clinvardisease_set.all()
-    context={"diseases" : diseases, "gene" : gene}
+    context={"diseases" : diseases, "gene" : gene, "sources" : pubmed.getPubmedPublications(gene.GeneName)}
     return render(request, 'geneDetails.html', context)
 
 def getGraphDataForDisease(request):

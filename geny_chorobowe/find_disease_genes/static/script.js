@@ -117,7 +117,7 @@ function drawSourceTimeLine(sources, sourcesNames) {
             dataDensity[start - interval]+=1;
         }
         for(var i in dataDensity){
-            density.push({x: (new Date).setTime(i), y: dataDensity[i], indexLabel: dataDensity[i], markerColor : "red"});
+            density.push({x: (new Date()).setTime(i), y: dataDensity[i], indexLabel: dataDensity[i], markerColor : "red", label:"hjgjgjug"});
         }
     }
     //console.log(sourcesNames);
@@ -140,13 +140,13 @@ function drawSourceTimeLine(sources, sourcesNames) {
       },
       data: [
       {
+        type: "spline",
+        dataPoints: density,
+      },
+      {
         type: "line",
         dataPoints: data,
       },
-      {
-        type: "spline",
-        dataPoints: density,
-      }
       ]
     });
 

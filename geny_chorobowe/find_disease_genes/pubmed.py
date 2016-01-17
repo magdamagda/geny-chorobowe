@@ -8,7 +8,10 @@ pubmedSourcesPath = "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi"
 
 def getPubmedPublications(diseaseName):
     ids = getIds(diseaseName)
-    return getSourcesDetail(ids)
+    result = ''
+    for i in ids:
+        result += "," + i
+    return getSourcesDetail(result)
 
 def getIds(name):
     data = urllib.urlencode({"term" : name})
@@ -16,9 +19,9 @@ def getIds(name):
     resp, content = h.request(pubMedIdsPath + "?" + data , method="GET")
     root = ET.fromstring(content)
     ids = root.find("IdList")
-    result = ''
+    result = []
     for i in ids.findall("Id"):
-        result += "," + i.text
+        result.append(i.text)
     return result
     
 def getSourcesDetail(ids):
@@ -52,6 +55,14 @@ def getSourcesDetail(ids):
         i+=1
     return result
 
+def getGenesPubRelation(genes, pubs):
+    for gene in genes:
+        ids = getIds(gene.GeneName)
+        for pub in pubs:
+            if pub.Id in ids:
+                print "appending"
+                pub.related.append({"name" : gene.GeneName, "id" : gene.GeneID})
+
 class pubMedDoc():
     def __init__(self):
         self.Id = None
@@ -61,3 +72,4 @@ class pubMedDoc():
         self.Title = ""
         self.Journal = ""
         self.Num = 0
+        self.related = []
