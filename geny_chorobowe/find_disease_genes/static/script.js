@@ -96,9 +96,29 @@ function getGraphDataResponse(result,status,xhr) {
 }
 
 function drawSourceTimeLine(sources, sourcesNames) {
-    data=[];
-    for (var i in sources){
-        data.push({x: new Date(sources[i]), y: 1, indexLabel: i, markerColor : "red", label: sourcesNames[i]});
+    var data=[];
+    var density = [];
+    var dataDensity={};
+    if(sources[1]!=undefined){
+        var start = (new Date(sources[1])).getTime();
+        var stop = (new Date(sources[Object.keys(sources).length])).getTime();
+        var interval = (start - stop)/20;
+        for(var i=1; i<20; i=i+2){
+            dataDensity[start - i*interval] = 0;
+        }
+        stop = start - 2*interval;
+        for (var i in sources){
+            var date = new Date(sources[i]);
+            data.push({x: date, y: 1, indexLabel: i, markerColor : "red", label: sourcesNames[i]});
+            while(!(date.getTime() > stop && date.getTime() <= start)){
+                start = stop;
+                stop = stop - 2*interval;
+            }
+            dataDensity[start - interval]+=1;
+        }
+        for(var i in dataDensity){
+            density.push({x: (new Date).setTime(i), y: dataDensity[i], indexLabel: dataDensity[i], markerColor : "red"});
+        }
     }
     //console.log(sourcesNames);
     var chart = new CanvasJS.Chart("sourcesTimeline",
@@ -113,14 +133,19 @@ function drawSourceTimeLine(sources, sourcesNames) {
       axisX: {
       },
       axisY:{
-        maximum : 2,
+        //maximum : 2,
+        //minimum: -1,
         interval : 1,
-        includeZero: false
+        includeZero: true,
       },
       data: [
       {
         type: "line",
         dataPoints: data,
+      },
+      {
+        type: "spline",
+        dataPoints: density,
       }
       ]
     });
@@ -141,6 +166,7 @@ function updateMedgen() {
         type: 'GET',
         success: updateMedgenResponse,
     });
+    $("#updateResult").text("Updating medgen. It can take a while ...");
 }
 
 function updateClinvar() {
@@ -151,12 +177,13 @@ function updateClinvar() {
         type: 'GET',
         success: updateClinvarResponse,
     });
+    $("#updateResult").text("Updating clinvar. It can take a while ...");
 }
 
 function updateClinvarResponse(result,status,xhr){
     if("result" in result && result["result"]=="OK"){
-        updateMedgen();
-        $("#updateResult").text("Clinvar updated. Updating medgen. It can take a while ...");
+        $("#updateResult").text("Clinvar updated.  Refreshing site ...");
+        window.location.href = "/";
         return;
     }
     if("error" in result){
