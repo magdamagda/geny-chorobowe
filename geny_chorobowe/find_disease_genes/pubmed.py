@@ -19,9 +19,10 @@ def getIds(name):
     resp, content = h.request(pubMedIdsPath + "?" + data , method="GET")
     root = ET.fromstring(content)
     ids = root.find("IdList")
-    result = []
-    for i in ids.findall("Id"):
-        result.append(i.text)
+    result=[]
+    if not ids is None:
+        for i in ids.findall("Id"):
+            result.append(i.text)
     return result
     
 def getSourcesDetail(ids):

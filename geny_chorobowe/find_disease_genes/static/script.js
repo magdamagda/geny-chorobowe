@@ -33,13 +33,13 @@ function drawGraph(geneDiseaseList, genes, diseases) {
         };
     
     /* modify the edge creation to attach random weights */
-    g.edgeFactory.build = function(source, target) {
+    /*g.edgeFactory.build = function(source, target) {
         var e = jQuery.extend(true, {}, this.template);
         e.source = source;
         e.target = target;
         //e.style.label = e.weight = Math.floor(Math.random() * 10) + 1;
         return e;
-    }
+    }*/
     
     for(var item in diseases){
         g.addNode(item, {render:renderDisease});
@@ -114,10 +114,11 @@ function drawSourceTimeLine(sources, sourcesNames) {
                 start = stop;
                 stop = stop - 2*interval;
             }
-            dataDensity[start - interval]+=1;
+            if(dataDensity[start - interval]!=undefined)
+                dataDensity[start - interval]+=1;
         }
         for(var i in dataDensity){
-            density.push({x: (new Date()).setTime(i), y: dataDensity[i], indexLabel: dataDensity[i], markerColor : "red", label:"hjgjgjug"});
+            density.push({x: (new Date()).setTime(i), y: dataDensity[i]});
         }
     }
     //console.log(sourcesNames);
