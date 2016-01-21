@@ -49,7 +49,7 @@
             <br>
             Related with:
             {% for item in  source.related %}
-                <a href="geneDetails?id={{ item.id }}">{{ item.name }}</a>
+                <span class="label label-primary"><a style="color:white;" href="geneDetails?id={{ item.id }}">{{ item.name }}</a></span>
             {% endfor %}
             <br><br>
         </div>
